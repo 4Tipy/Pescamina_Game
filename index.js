@@ -1,94 +1,91 @@
+let numFilas;
+let numColumnas;
+let casilla;
+
+
 function iniciarPartida() {
     let valorMinimo = 10;
     let valorMaximo = 30;
 
-    let numFilas = parseInt(prompt("Introduce el número de filas:"));
+    numFilas = parseInt(prompt("Introduce el número de filas:"));
+    numColumnas = parseInt(prompt("Introduce el número de columnas:"));
+
     if (numFilas < valorMinimo) {
         numFilas = valorMinimo;
     } else if (numFilas > valorMaximo) {
         numFilas = valorMaximo;
     }
 
-    let numColumnas = parseInt(prompt("Introduce el número de columnas:"));
     if (numColumnas < valorMinimo) {
         numColumnas = valorMinimo;
     } else if (numColumnas > valorMaximo) {
         numColumnas = valorMaximo;
     }
 
-    return { numFilas, numColumnas };
+    crearTabla();
+    setMinas();
 }
 
-// function crearTabla(numFilas, numColumnas) {
-//     const tabla = document.createElement("table");
-
-//     for (let i = 1; i <= numFilas; i++) {
-//         const fila = document.createElement("tr");
-//         for (let j = 1; j <= numColumnas; j++) {
-//             const celda = document.createElement("td");
-//             // celda.textContent = `${i}, ${j}`;
-//             //propiedad data para la imagen 
-
-//             celda.setAttribute("data-mina", "false");
-//             celda.style.backgroundImage = 'url("/imagenes/fons20px.jpg")';
-//             // celda.style.backgroundSize = "cover"; 
-//             // celda.style.backgroundRepeat = "no-repeat"; // Evita la repetición de la imagen
-
-//             //evento 
-//             celda.addEventListener("click", abrirCasilla);
-
-//             fila.appendChild(celda);
-//             celda.style.border = "1px solid black";
-
-//         }
-
-//         fila.style.border = "1px solid black";
-//         tabla.appendChild(fila);
-//     }
-
-//     document.body.appendChild(tabla);
-
-// }
-function crearTabla(numFilas, numColumnas) {
-    let tablaHTML = `<table border = "1px solid black">`;
+function crearTabla() {
+    let tablaHTML = `<table border="1px solid black">`;
     for (let i = 1; i <= numFilas; i++) {
         tablaHTML += '<tr>';
 
         for (let j = 1; j <= numColumnas; j++) {
-            tablaHTML += `<td data-mida ="false"> <img onclick="abrirCasilla()"src="/imagenes/fons20px.jpg"> </td>`;
+            tablaHTML += `<td id="td-${i}-${j}"data-fila=${i} data-columna=${j} data-mina="false"> <img id="img-${i}-${j}" onclick="abrirCasilla(${i}, ${j})" src="./imagenes/fons20px.jpg"> </td>`;
         }
 
         tablaHTML += '</tr>';
     }
 
     tablaHTML += '</table>';
-    document.body.innerHTML += tablaHTML
-
-}
-
-function abrirCasilla(){
-    console.log("estas haciendo cosas")
+    document.body.innerHTML += tablaHTML;
 }
 
 function setMinas() {
     let totalCeldas = numColumnas * numFilas;
-    let numMinas = totalCeldas * 0.17;
+    let porcentajeMinas = totalCeldas * 0.17;
+    let contador = 0;
 
-    for (let x = 1; x <= numMinas; x++) {
-        const weno = Array[i];
-        let i = Math.random();
+    for (let x = 1; x <= porcentajeMinas; x++) {
+        let fila = parseInt(Math.random() * numFilas) + 1;
+        let columna = parseInt(Math.random() * numColumnas) + 1;
 
-        const weno2 = Array[j];
-        let j = Math.random();    
+        casilla = document.getElementById(`td-${fila}-${columna}`);
+        console.log(casilla);
 
+        if (casilla != null) {
+            casilla.dataset.mina = "true";
+            contador++;
+        }
+    }
+    console.log(contador);
+}
+
+function esMina(fila, columna) {
+    casilla = document.getElementById(`td-${fila}-${columna}`);
+
+    if (casilla != null && casilla.dataset.mina === "true") {
+        return true;
+    } else {
+        return false;
     }
 }
 
-function calculaAdjacents() {
+function abrirCasilla(fila, columna) {
+    casilla = document.getElementById(`td-${fila}-${columna}`);
+    let imagen = document.getElementById(`img-${fila}-${columna}`);
+
+    if (esMina(fila,columna)) {
+        imagen.src = "./imagenes/mina20px.jpg";
+        console.log("has encontrado una mina");
+    } else {
+        casilla.innerHTML="0";
+        console.log("eres aweonao")
+    }
+}
+function setMinesAdjacents(fila,columna,nMinesAdjacentes){
+
 }
 
-// Llamar a las funciones en el orden adecuado
-const { numFilas, numColumnas } = iniciarPartida();
-crearTabla(numFilas, numColumnas);
-setMinas();
-calculaAdjacents();
+iniciarPartida();
